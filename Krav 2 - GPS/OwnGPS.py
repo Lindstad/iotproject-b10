@@ -1,6 +1,5 @@
 from machine import UART
 from gps_simple import GPS_SIMPLE
-from gpio_lcd import GpioLcd
 from machine import Pin
 import _thread
 import time
@@ -27,9 +26,7 @@ class OwnGPS:
                        'course':'',
                        'frames_received':''
                        }
-        self.lcd = GpioLcd(rs_pin=Pin(27), enable_pin=Pin(25),
-              d4_pin=Pin(33), d5_pin=Pin(32), d6_pin=Pin(21), d7_pin=Pin(22),
-              num_lines=4, num_columns=20)
+
         
     def getData(self):
         if (self.gps.receive_nmea_data(self.gpsEcho)):
@@ -49,13 +46,4 @@ class OwnGPS:
             return self.output
         else:
             return self.output
-    def drawOnLCD(self):
-        lat = 'lat '+str(self.getData()['latitude'])[:4]
-        lon = 'lon '+str(self.getData()['longitude'])[:4]
-        self.lcd.move_to(0,0)
-        self.lcd.putstr('spd '+str(self.getData()['speed'])[:3])
-        self.lcd.move_to(0,1)
-        self.lcd.putstr(lat)
-        self.lcd.move_to(len(lat)+1,1)
-        self.lcd.putstr(lon)
     
