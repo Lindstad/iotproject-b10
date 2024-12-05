@@ -32,10 +32,10 @@ lcd.custom_char(0,custom_chr)
 
 while True:
     lcd.clear()
-    lat = 'lat '+str(gps.getData()['latitude'])[:5]
-    lon = 'lon '+str(gps.getData()['longitude'])[:5]
+    lat = 'lat:'+str(gps.getData()['latitude'])[:5]
+    lon = 'lon:'+str(gps.getData()['longitude'])[:5]
     lcd.move_to(0,0)
-    spd = 'spd '+str(gps.getData()['speed'])[:3]
+    spd = 'spd:'+str(gps.getData()['speed'])[:3]
     lcd.putstr(spd)
     lcd.move_to(len(spd)+2,0)
     lcd.putstr('NESW:'+str(gps.getData()['course']))
@@ -46,8 +46,8 @@ while True:
     lcd.move_to(0,2)
     lcd.putstr(str(batteri.Battery_procent())[:5]+"%")
     lcd.move_to(0,3)
-    lcd.putstr("Temp: 22")
-    lcd.move_to(len("Temp: 22"),3)
+    lcd.putstr("Temp:22")
+    lcd.move_to(len("Temp:22"),3)
     lcd.putchar(chr(0))
     telemetry = {'latitude': gps.getData()['latitude'], 'longitude': gps.getData()['longitude'],'temperature':'22','batteryLevel':batteri.Battery_procent(),'course':gps.getData()['course']}
     client.send_telemetry(telemetry)
@@ -55,6 +55,7 @@ while True:
     print("Speed: "+str(gps.getData()['speed']))
     print('temperature: 22')
     print('Retning: '+str(gps.getData()['course']))
+    print("batteriprocent: "+str(batteri.Battery_procent()))
     print()
     time.sleep(1)
     
