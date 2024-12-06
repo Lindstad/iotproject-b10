@@ -5,7 +5,7 @@ except:
 import requests
 import GroenOpladning
 
-opladning = GroenOpladning.GroenOpladning(26)
+opladning = GroenOpladning.GroenOpladning(13,26)
 
 print(opladning.getEmissions())
 opladning.calc()
