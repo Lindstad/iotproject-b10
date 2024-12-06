@@ -44,6 +44,4 @@ class OwnGPS:
             self.output['frames_received'] = self.gps.get_frames_received()
 
             return self.output
-        else:
-            return self.output
     
