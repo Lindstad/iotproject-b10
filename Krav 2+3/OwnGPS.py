@@ -43,5 +43,5 @@ class OwnGPS:
             self.output['course'] = self.gps.get_course()
             self.output['frames_received'] = self.gps.get_frames_received()
 
-            return self.output                                                #Returnere output dict med ny data
+            return self.output                                                 # Returnere output dict med ny data
     
