@@ -1,7 +1,7 @@
 # Wifi credentials
-SSID = 'nikoniko'
-PASSWORD = 'nikiniki'
+SSID = 'bruger'
+PASSWORD = 'kode'
 
 # Server credentials
-ACCESS_TOKEN = 'Zc8gD1eHUefc4KNHgtKd'
+ACCESS_TOKEN = 'access token'
 SERVER_IP_ADDRESS = 'demo.thingsboard.io'
