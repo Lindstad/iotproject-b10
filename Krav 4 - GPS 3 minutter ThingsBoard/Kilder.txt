@@ -1,0 +1,3 @@
+https://www.w3schools.com/python/python_booleans.asp
+
+boolean variable "stillness_flag = False"
