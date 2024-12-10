@@ -20,7 +20,7 @@ print("Connected to ThingsBoard")
 
 # Konfigurationsparametre
 STILLNESS_TIME = 3 * 60 * 1000  # 3 minutter i millisekunder
-MOVEMENT_THRESHOLD = 0.0001    # Minimum ændring i latitude/longitude for at betragte bevægelse
+MOVEMENT_THRESHOLD = 0.0002    # Minimum ændring i latitude/longitude for at betragte bevægelse
 
 # Variabler til tilstandsstyring
 last_position = None
@@ -71,7 +71,7 @@ while True:
             # Opdater den seneste position
             last_position = current_position
 
-        sleep(5)  # Reducer hyppigheden af GPS-opdateringer
+        sleep(10)  # Reducer hyppigheden af GPS-opdateringer
 
     except KeyboardInterrupt:
         print("Disconnected!")
