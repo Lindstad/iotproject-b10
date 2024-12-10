@@ -41,8 +41,9 @@ lcd.custom_char(0,custom_chr)
 
 
 while True:
-    lcd.clear()
+    
     if gps.isValid():
+        lcd.clear()
         lat = 'lat:'+str(gps.getData()['latitude'])[:5]         #Træk latitude fra vores eget gps objekt og skærer nogle decimaler fra  
         lon = 'lon:'+str(gps.getData()['longitude'])[:5]        #Træk longitude fra vores eget gps objekt og skærer nogle decimaler fra  
         temp = str(imu.get_values()['temperature celsius'])[:4] #Mål temperatur og skærer nogle decimaler fra
