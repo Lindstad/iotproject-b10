@@ -30,5 +30,8 @@ while True:
         if new_distance == 0.0:
             calc = 0.1082*distance
             lcd.move_to(0,0)
-            lcd.putstr(str(calc))
+            lcd.putstr('Du har sparet')
+            lcd.move_to(0,1)
+            displaystr = str(calc)+" g CO2"
+            lcd.putstr(displaystr)
             
