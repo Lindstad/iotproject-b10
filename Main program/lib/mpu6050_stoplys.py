@@ -19,7 +19,7 @@ class mpu:
         
     def instance(self):
         try:
-            if ticks_ms() - self.start > 10:
+            if ticks_ms() - self.start > 200:
                 print(self.imu.get_values()['acceleration y'])
                 
                 if ticks_ms() - self.start > self.start_ticks1:
@@ -30,13 +30,17 @@ class mpu:
                     self.start = ticks_ms()
                     
                 if self.brake: 
-                    if ticks_ms() - self.start2 > 10000:
+                    if ticks_ms() - self.start2 > 2000:
                         self.ring.set_color(0, 0, 0) 
                         self.brake = False
                     
-        except KeyboardInterrupt: #except Exception as e:
+        except KeyboardInterrupt:
             print("Ctrl+C pressed - exiting program.")
             sys.exit()
+
+
+
+
 
 
 
