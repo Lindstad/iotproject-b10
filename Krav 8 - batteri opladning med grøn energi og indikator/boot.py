@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# main.py
 
 import gc
 gc.collect()
@@ -22,7 +21,7 @@ def do_connect():
             print('WLAN status:', wlan.status())
             start = ticks_ms()
             while not wlan.isconnected():
-                if ticks_ms() - start > 10000:
+                if ticks_ms() - start > 30000:
                     print("Could not connect to wifi!")
                     break
 
