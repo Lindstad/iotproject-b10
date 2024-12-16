@@ -18,11 +18,9 @@ class MockGroenOpladning:
         if self.getEmissions() < 50:
             self.pin_Green.on()
             self.pin_Red.off()
-            print("Grøn energi: Relæ ON")
         else:
             self.pin_Green.off()
             self.pin_Red.on()
-            print("Ikke-grøn energi: Relæ OFF")
 
 # Initialiser mock-klassen
 opladning = MockGroenOpladning(13, 26)
