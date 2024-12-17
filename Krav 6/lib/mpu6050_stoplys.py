@@ -19,18 +19,18 @@ class mpu:
         
     def instance(self):
         try:
-            if ticks_ms() - self.start > 10:
+            if ticks_ms() - self.start > 100:
                 print(self.imu.get_values()['acceleration y'])
                 
-                if ticks_ms() - self.start > self.start_ticks1:
-                    if self.imu.get_values()['acceleration y'] > self.acceleration_y_værdi:
-                        self.ring.set_color(100, 0, 0) 
-                        self.start2 = ticks_ms()
-                        self.brake = True
-                    self.start = ticks_ms()
+             
+                if self.imu.get_values()['acceleration y'] > self.acceleration_y_værdi:
+                    self.ring.set_color(100, 0, 0) 
+                    self.start2 = ticks_ms()
+                    self.brake = True
+                self.start = ticks_ms()
                     
                 if self.brake: 
-                    if ticks_ms() - self.start2 > 10000:
+                    if ticks_ms() - self.start2 > 2000:
                         self.ring.set_color(0, 0, 0) 
                         self.brake = False
                     
@@ -38,5 +38,10 @@ class mpu:
             print("Ctrl+C pressed - exiting program.")
             sys.exit()
 
+ring = selfneopixel(12,26)
+program_6 = mpu(1500,100,ring)
+ring.set_color(0,0,0)
 
+while True:
+    program_6.instance()
 
