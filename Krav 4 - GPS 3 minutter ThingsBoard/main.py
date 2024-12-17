@@ -7,11 +7,12 @@ import gc
 from time import ticks_diff
 
 
+
 program_4_1 = client_program(TBDeviceMqttClient, secrets)
 program_4_1.client_run()
 program_4 = gps_program(UART, GPS_SIMPLE)
 start = ticks_ms()
-delay = 3000
+
 
 STILLNESS_TIME = 3 * 1 * 1000  # 3 minutter i millisekunder
 MOVEMENT_THRESHOLD = 0.0002
@@ -19,7 +20,6 @@ last_position = None
 last_movement_time = ticks_ms()
 stillness_flag = False
 
-ring.set_color(0,0,0)
 while True:
     # Krav 4
     try:
@@ -42,23 +42,21 @@ while True:
             if moving:
                 last_movement_time = current_time
                 if stillness_flag:
-                    # Send besked om bevægelse
                     telemetry = {'latitude': current_position[0], 'longitude': current_position[1]}
                     client.send_telemetry(telemetry)
                     print("Movement detected, telemetry sent:", telemetry)
+                    #sende til thingsboard er ikke med i program
                     stillness_flag = False
-                    ring.set_color(0,0,0)
+
                     
             else:
                 if ticks_diff(current_time, last_movement_time) > STILLNESS_TIME:
                     stillness_flag = True
                     print("Cyklen har stået stille i mere end 3 minutter.")
-                    ring.set_color(0,0,100)
+
                     
             last_position = current_position
-#              if lat_lon:   
-#                  telemetry = {'latitude': lat_lon[0], 'longitude': lat_lon[1]}
-#                  client.send_telemetry(telemetry) 
+
             start = ticks_ms()
             
     except Exception as e:
