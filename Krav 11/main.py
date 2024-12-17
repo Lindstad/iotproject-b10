@@ -27,7 +27,7 @@ while True:
     if pos1 and pos2:
         new_distance = haversine(lat1,lon1,lat2,lon2) 
         distance += new_distance
-        if new_distance < 1:
+        if new_distance < 5:
             calc = 0.1082*distance
             lcd.move_to(0,0)
             lcd.putstr('Du har sparet')
