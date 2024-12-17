@@ -12,10 +12,10 @@ class Batteri:
         self.potmeter_adc = ADC(Pin(pin_potmeter))
         self.potmeter_adc.atten(ADC.ATTN_11DB)
         #adc værdier
-        self.x1 = 2790
-        self.y1 = 4.2
-        self.x2 = 1950
-        self.y2 = 3.0
+        self.x1 = 2798 
+        self.y1 = 8.4 
+        self.x2 = 1999
+        self.y2 = 6.0
         self.a = (self.y2-self.y1) /(self.x2-self.x1)
         self.b = self.y1-self.a*self.x1
     def getADCValue(self):
