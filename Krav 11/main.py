@@ -1,5 +1,5 @@
 from gpio_lcd import GpioLcd
-from machine import I2C
+from machine import I2C, Pin
 import time
 import OwnGPS
 import gc
@@ -27,11 +27,16 @@ while True:
     if pos1 and pos2:
         new_distance = haversine(lat1,lon1,lat2,lon2) 
         distance += new_distance
-        if new_distance == 0.0:
+        if new_distance < 5:
             calc = 0.1082*distance
             lcd.move_to(0,0)
             lcd.putstr('Du har sparet')
             lcd.move_to(0,1)
             displaystr = str(calc)+" g CO2"
             lcd.putstr(displaystr)
+            bottlewatercalc = calc/250
+            lcd.move_to(0,2)
+            lcd.putstr("Det er "+str(bottlewatercalc)[:3]+" flasker")
+        else:
+            lcd.clear()
             
