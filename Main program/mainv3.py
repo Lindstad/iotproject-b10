@@ -27,15 +27,26 @@ def batt_percentage(u_batt):
     percent = normalized * 100
     return percent
 
-lcd.putstr('BATTERY PERCENTAGE:')
-
-previous_battery_percent = 0
-
 start_1 = ticks_ms()
 interval_1 = 1000
 
 # Krav 2-3 - Lcd display af ting og til thingsboard. 
 # ...
+import OwnGPS
+
+gps = OwnGPS.OwnGPS(2)
+custom_chr = bytearray([0b00111,
+              0b00101,
+              0b00111,
+              0b00000,
+              0b00000,
+              0b00000,
+              0b00000,
+              0b00000])
+lcd.custom_char(0,custom_chr)
+
+start_2 = ticks_ms()
+interval_2 = 3000
 
 # Krav 4 - Stået stille i 3 min. 
 from uthingsboard.client import TBDeviceMqttClient
@@ -117,26 +128,23 @@ interval_9 = 1000
 
 # Krav 11 - Nudging program.
 # ...
+start_11 = ticks_ms
+interval_11 = 5000
+moving_11 = True
+distance = 0
 
 while True:
-    
     try:
     # Krav 1
         if ticks_ms() - start_1 > interval_1:
             val = potmeter_adc.read()
             battery_percent = batt_voltage(val)/8.4*100
-            print(f'\nKrav 1: U percentage {round(battery_percent),2}%')
-            if previous_battery_percent != battery_percent:
-                lcd.move_to(0, 1)
-                lcd.putstr(f"     ") # clear characters
-                lcd.move_to(0, 1)
-                lcd.putstr(f"{str(int(battery_percent))}%")
-                previous_battery_percent = battery_percent
-                telemetry_1 = {'batteri': battery_percent}
-                client.send_telemetry(telemetry_1)
-                
+            print(f'\nKrav 1: U percentage {round(battery_percent)}%')
+#                 telemetry_1 = {'batteri': battery_percent}
+#                 client.send_telemetry(telemetry_1)
+#                 
             start_1 = ticks_ms()
-   
+
     # Krav 4
         if ticks_ms() - start_4 > interval_4:
             current_time = ticks_ms()
@@ -173,8 +181,40 @@ while True:
                     
             last_position = current_position
             start_4 = ticks_ms()
+    # Krav 2
+        if ticks_ms() - start_2 > interval_2 and moving_11:
+            lcd.clear()
+            lat = 'lat:'+str(current_position[0])[:5]          
+            lon = 'lon:'+str(current_position[1])[:5]          
+            temp = str(imu.get_values()['temperature celsius'])[:5] 
+            spd = 'spd:    '+str(gps.getData()['speed'])[:3]            
+            course = 'NESW:'+str(gps.getData()['course'])
+            lcd.move_to(0,0)
+            lcd.putstr(spd)
+            lcd.move_to(len(spd)+2,0)
+            lcd.putstr(course)
+            lcd.move_to(0,1)
+            lcd.putstr(lat)
+            lcd.move_to(len(lat)+1,1)
+            lcd.putstr(lon)
+            lcd.move_to(0,2)
+            lcd.putstr(f"bat: {str(int(battery_percent))}%")
+            lcd.move_to(0,3)
+            lcd.putstr("Tem: "+temp)
+            lcd.move_to(len("Tem"+temp)+1,3)
+            lcd.putchar(chr(0))
+            start_2 = ticks_ms()
             
-    # Krav 6    
+    # Krav 3
+            telemetry_3 = {'latitude': gps.getData()['latitude'],
+                         'longitude': gps.getData()['longitude'],
+                         'temperature':temp,
+                         'batteryLevel':battery_percent(),
+                         'course':gps.getData()['course']}
+            client.send_telemetry(telemetry_3)
+            start_2 = ticks_ms()
+    # Krav 6
+    
         if ticks_ms() - start_6 > interval_6:
             #print("Krav 6: ", imu.get_values()['acceleration y'])
             
@@ -205,9 +245,40 @@ while True:
             client.set_server_side_rpc_request_handler(handler) 
             client.check_msg()
             start_9 = ticks_ms()
-            
+    # krav 10
+    
+    # krav 11
+#         if ticks_ms() - start_11 > interval_9:
+#             pos1 = False
+#             pos2 = False
+#             if gps.isValid():
+#                 lat1 = str(current_position[0])
+#                 lon1 = str(current_position[1])
+#                 pos1 = True
+#             if gps.isValid():
+#                 lat2 = str(current_position[0])
+#                 lon2 = str(current_position[2])
+#                 pos2 = True
+#             if pos1 and pos2:
+#                 new_distance = haversine(lat1,lon1,lat2,lon2) 
+#                 distance += new_distance
+#                 if new_distance < 5:
+#                     calc = 0.1082*distance
+#                     lcd.move_to(0,0)
+#                     lcd.putstr('Du har sparet')
+#                     lcd.move_to(0,1)
+#                     displaystr = str(calc)+" g CO2"
+#                     lcd.putstr(displaystr)
+#                     bottlewatercalc = calc/250
+#                     lcd.move_to(0,2)
+#                     lcd.putstr("Det er "+str(bottlewatercalc)[:3]+" flasker")
+#                 else:
+#                     lcd.clear()
+
     except Exception as e:
         print(e)
+
+
 
 
 

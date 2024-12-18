@@ -70,9 +70,7 @@ while True:
     client.send_telemetry(telemetry)
     #Printer i konsollen 
     print("lat: "+str(gps.getData()['latitude']),"lon: "+str(gps.getData()['longitude']))
-    print("Speed: "+str(gps.getData()['speed'])[:3])
     print('temperature: '+temp)
-    print('Retning: '+str(gps.getData()['course']))
     print("batteriprocent: "+str(batteri.Battery_procent()))
     print()
     #Sleep timer - burde erstattes af en ticks funktion. Så den ikke blokerer. 
