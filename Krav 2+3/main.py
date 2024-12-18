@@ -27,6 +27,7 @@ batteri = batteri.Batteri()
 #Opretter forbindelse til ThingsBoard
 client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token = secrets.ACCESS_TOKEN)
 client.connect()
+print("connected to thingsboard, starting to send and receive data")
 
 #Grader karakter
 custom_chr = bytearray([0b00111,
@@ -42,38 +43,36 @@ lcd.custom_char(0,custom_chr)
 
 while True:
     
-    if gps.isValid():
-        lcd.clear()
-        lat = 'lat:'+str(gps.getData()['latitude'])[:5]         #Træk latitude fra vores eget gps objekt og skærer nogle decimaler fra  
-        lon = 'lon:'+str(gps.getData()['longitude'])[:5]        #Træk longitude fra vores eget gps objekt og skærer nogle decimaler fra  
-        temp = str(imu.get_values()['temperature celsius'])[:4] #Mål temperatur og skærer nogle decimaler fra
-        spd = 'spd:'+str(gps.getData()['speed'])[:3]            #Træk retning fra gpsobjektet.
-        course = 'NESW:'+str(gps.getData()['course'])
-        #Printer alt data på lcd-displayet 
-        lcd.move_to(0,0)
-        lcd.putstr(spd)
-        lcd.move_to(len(spd)+2,0)
-        lcd.putstr(course)
-        lcd.move_to(0,1)
-        lcd.putstr(lat)
-        lcd.move_to(len(lat)+1,1)
-        lcd.putstr(lon)
-        lcd.move_to(0,2)
-        lcd.putstr('bat:'+str(batteri.Battery_procent())[:5]+"%")
-        lcd.move_to(0,3)
-        lcd.putstr("Temp:"+temp)
-        lcd.move_to(len("Temp"+temp)+1,3)
-        lcd.putchar(chr(0))
-        #Sender data til ThingsBoard
-        telemetry = {'latitude': gps.getData()['latitude'], 'longitude': gps.getData()['longitude'],'temperature':temp,'batteryLevel':batteri.Battery_procent(),'course':gps.getData()['course']}
-        client.send_telemetry(telemetry)
-        #Printer i konsollen 
-        print("lat: "+str(gps.getData()['latitude']),"lon: "+str(gps.getData()['longitude']))
-        print("Speed: "+str(gps.getData()['speed'])[:3])
-        print('temperature: '+temp)
-        print('Retning: '+str(gps.getData()['course']))
-        print("batteriprocent: "+str(batteri.Battery_procent()))
-        print()
-        #Sleep timer - burde erstattes af en ticks funktion. Så den ikke blokerer. 
-        time.sleep(3)
     
+    lcd.clear()
+    lat = 'lat:'+str(gps.getData()['latitude'])[:5]         #Træk latitude fra vores eget gps objekt og skærer nogle decimaler fra  
+    lon = 'lon:'+str(gps.getData()['longitude'])[:5]        #Træk longitude fra vores eget gps objekt og skærer nogle decimaler fra  
+    temp = str(imu.get_values()['temperature celsius'])[:4] #Mål temperatur og skærer nogle decimaler fra
+    spd = 'spd:'+str(gps.getData()['speed'])[:3]            #Træk retning fra gpsobjektet.
+    course = 'NESW:'+str(gps.getData()['course'])
+    #Printer alt data på lcd-displayet 
+    lcd.move_to(0,0)
+    lcd.putstr(spd)
+    lcd.move_to(len(spd)+2,0)
+    lcd.putstr(course)
+    lcd.move_to(0,1)
+    lcd.putstr(lat)
+    lcd.move_to(len(lat)+1,1)
+    lcd.putstr(lon)
+    lcd.move_to(0,2)
+    lcd.putstr('bat:'+str(batteri.Battery_procent())[:5]+"%")
+    lcd.move_to(0,3)
+    lcd.putstr("Temp:"+temp)
+    lcd.move_to(len("Temp"+temp)+1,3)
+    lcd.putchar(chr(0))
+    #Sender data til ThingsBoard
+    telemetry = {'latitude': gps.getData()['latitude'], 'longitude': gps.getData()['longitude'],'temperature':temp,'batteryLevel':batteri.Battery_procent(),'course':gps.getData()['course']}
+    client.send_telemetry(telemetry)
+    #Printer i konsollen 
+    print("lat: "+str(gps.getData()['latitude']),"lon: "+str(gps.getData()['longitude']))
+    print('temperature: '+temp)
+    print("batteriprocent: "+str(batteri.Battery_procent()))
+    print()
+    #Sleep timer - burde erstattes af en ticks funktion. Så den ikke blokerer. 
+    time.sleep(3)
+
