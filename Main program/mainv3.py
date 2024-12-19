@@ -47,6 +47,7 @@ lcd.custom_char(0,custom_chr)
 
 start_2 = ticks_ms()
 interval_2 = 3000
+''' Hastighed og retninger virker måske ikke. ikke connectet til thingsboard. '''
 
 # Krav 4 - Stået stille i 3 min. 
 from uthingsboard.client import TBDeviceMqttClient
@@ -71,7 +72,7 @@ MOVEMENT_THRESHOLD = 0.0002
 last_position = None
 last_movement_time = ticks_ms()
 stillness_flag = False
-""" Ikke done. Den går ikke noget når der bliver bevæget. """
+''' Ikke done. Den går ikke noget når der bliver bevæget. '''
 
 # krav 6 - Bremselys. 
 from neo_ring import selfneopixel
@@ -124,10 +125,22 @@ interval_9 = 1000
 ''' Ikke done. Skal indenholde lys og lyd hvis i bevægelse. '''
 
 # Krav 10 - Håndtagsvarmer.
-# ...
+from dht import DHT11
+from lmt87 import LMT87
+dht11 = DHT11(Pin(2))
+lmt87 = LMT87(35)
+mosfet_pin = Pin(4, Pin.OUT)
+
+
+lmt87_threshold = 30
+dht11_threshold = 30
+
+last_dht11_time = 0
+start_10 = ticks_ms()
+interval_10 = 5000
 
 # Krav 11 - Nudging program.
-# ...
+
 start_11 = ticks_ms
 interval_11 = 5000
 moving_11 = True
@@ -140,9 +153,9 @@ while True:
             val = potmeter_adc.read()
             battery_percent = batt_voltage(val)/8.4*100
             print(f'\nKrav 1: U percentage {round(battery_percent)}%')
-#                 telemetry_1 = {'batteri': battery_percent}
-#                 client.send_telemetry(telemetry_1)
-#                 
+    #                 telemetry_1 = {'batteri': battery_percent}
+    #                 client.send_telemetry(telemetry_1)
+    #                 
             start_1 = ticks_ms()
 
     # Krav 4
@@ -181,40 +194,9 @@ while True:
                     
             last_position = current_position
             start_4 = ticks_ms()
-    # Krav 2
-        if ticks_ms() - start_2 > interval_2 and moving_11:
-            lcd.clear()
-            lat = 'lat:'+str(current_position[0])[:5]          
-            lon = 'lon:'+str(current_position[1])[:5]          
-            temp = str(imu.get_values()['temperature celsius'])[:5] 
-            spd = 'spd:    '+str(gps.getData()['speed'])[:3]            
-            course = 'NESW:'+str(gps.getData()['course'])
-            lcd.move_to(0,0)
-            lcd.putstr(spd)
-            lcd.move_to(len(spd)+2,0)
-            lcd.putstr(course)
-            lcd.move_to(0,1)
-            lcd.putstr(lat)
-            lcd.move_to(len(lat)+1,1)
-            lcd.putstr(lon)
-            lcd.move_to(0,2)
-            lcd.putstr(f"bat: {str(int(battery_percent))}%")
-            lcd.move_to(0,3)
-            lcd.putstr("Tem: "+temp)
-            lcd.move_to(len("Tem"+temp)+1,3)
-            lcd.putchar(chr(0))
-            start_2 = ticks_ms()
-            
-    # Krav 3
-            telemetry_3 = {'latitude': gps.getData()['latitude'],
-                         'longitude': gps.getData()['longitude'],
-                         'temperature':temp,
-                         'batteryLevel':battery_percent(),
-                         'course':gps.getData()['course']}
-            client.send_telemetry(telemetry_3)
-            start_2 = ticks_ms()
+
     # Krav 6
-    
+
         if ticks_ms() - start_6 > interval_6:
             #print("Krav 6: ", imu.get_values()['acceleration y'])
             
@@ -246,37 +228,54 @@ while True:
             client.check_msg()
             start_9 = ticks_ms()
     # krav 10
-    
-    # krav 11
-#         if ticks_ms() - start_11 > interval_9:
-#             pos1 = False
-#             pos2 = False
-#             if gps.isValid():
-#                 lat1 = str(current_position[0])
-#                 lon1 = str(current_position[1])
-#                 pos1 = True
-#             if gps.isValid():
-#                 lat2 = str(current_position[0])
-#                 lon2 = str(current_position[2])
-#                 pos2 = True
-#             if pos1 and pos2:
-#                 new_distance = haversine(lat1,lon1,lat2,lon2) 
-#                 distance += new_distance
-#                 if new_distance < 5:
-#                     calc = 0.1082*distance
-#                     lcd.move_to(0,0)
-#                     lcd.putstr('Du har sparet')
-#                     lcd.move_to(0,1)
-#                     displaystr = str(calc)+" g CO2"
-#                     lcd.putstr(displaystr)
-#                     bottlewatercalc = calc/250
-#                     lcd.move_to(0,2)
-#                     lcd.putstr("Det er "+str(bottlewatercalc)[:3]+" flasker")
-#                 else:
-#                     lcd.clear()
+        if ticks_ms() - start_10 > interval_10:
+            dht11.measure()
+            dht11_temp = dht11.temperature()
+            lmt87.get_temperature()
+            lmt87_temp = int(lmt87.get_temperature())
+            if lmt87_temp < lmt87_threshold and dht11_temp < dht11_threshold:
+                mosfet_pin.on()
+                print(f"varmer on DHT11: {dht11_temp} LMT87: {lmt87_temp}")
+            else:
+                mosfet_pin.off()
+                print(f"varmer off DHT11: {dht11_temp} LMT87: {lmt87_temp}")
+            start_10 = ticks_ms()
+    # Krav 2
+        if ticks_ms() - start_2 > interval_2 and moving_11:
+            lcd.clear()
+            lat = 'lat:'+str(current_position[0])[:5]          
+            lon = 'lon:'+str(current_position[1])[:5]          
+            temp = str(imu.get_values()['temperature celsius'])[:5] 
+            spd = 'spd:    '+str(gps.getData()['speed'])[:3]            
+            course = 'NESW:'+str(gps.getData()['course'])
+            lcd.move_to(0,0)
+            lcd.putstr(spd)
+            lcd.move_to(len(spd)+2,0)
+            lcd.putstr(course)
+            lcd.move_to(0,1)
+            lcd.putstr(lat)
+            lcd.move_to(len(lat)+1,1)
+            lcd.putstr(lon)
+            lcd.move_to(0,2)
+            lcd.putstr(f"bat: {str(int(battery_percent))}%")
+            lcd.move_to(0,3)
+            lcd.putstr("Tem: "+temp)
+            lcd.move_to(len("Tem"+temp)+1,3)
+            lcd.putchar(chr(0))
+            start_2 = ticks_ms()
 
+            
+    # Krav 3
+            telemetry_3 = {'latitude': gps.getData()['latitude'],
+                         'longitude': gps.getData()['longitude'],
+                         'temperature':temp,
+#                         'batteryLevel':battery_percent(),
+                         'course':gps.getData()['course']}
+            client.send_telemetry(telemetry_3)
+            start_2 = ticks_ms()
     except Exception as e:
         print(e)
+
 
 
 

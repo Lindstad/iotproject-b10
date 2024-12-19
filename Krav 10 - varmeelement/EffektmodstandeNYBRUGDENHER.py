@@ -45,8 +45,6 @@ while True:
         # Læs temperatur fra DHT11
         dht11.measure()
         temp_modstand = dht11.temperature()  # Temperatur i °C fra DHT11
-
-        # Print temperaturerne
         print(f"\nUdendørs temperatur: {temp_ambient:.2f} °C")
         print(f"Modstandstemperatur: {temp_modstand:.2f} °C")
 
@@ -56,4 +54,4 @@ while True:
     except Exception as e:
         print(f"Fejl: {e}")
 
-    sleep(2)  # Vent 2 sekunder før næste måling
+    sleep(2)  
