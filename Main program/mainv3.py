@@ -183,26 +183,28 @@ while True:
             start_4 = ticks_ms()
     # Krav 2
         if ticks_ms() - start_2 > interval_2 and moving_11:
-            lcd.clear()
-            lat = 'lat:'+str(current_position[0])[:5]          
-            lon = 'lon:'+str(current_position[1])[:5]          
-            temp = str(imu.get_values()['temperature celsius'])[:5] 
-            spd = 'spd:    '+str(gps.getData()['speed'])[:3]            
-            course = 'NESW:'+str(gps.getData()['course'])
-            lcd.move_to(0,0)
-            lcd.putstr(spd)
-            lcd.move_to(len(spd)+2,0)
-            lcd.putstr(course)
-            lcd.move_to(0,1)
-            lcd.putstr(lat)
-            lcd.move_to(len(lat)+1,1)
-            lcd.putstr(lon)
-            lcd.move_to(0,2)
-            lcd.putstr(f"bat: {str(int(battery_percent))}%")
-            lcd.move_to(0,3)
-            lcd.putstr("Tem: "+temp)
-            lcd.move_to(len("Tem"+temp)+1,3)
-            lcd.putchar(chr(0))
+            if gps.isValid():
+                
+                lcd.clear()
+                lat = 'lat:'+str(current_position[0])[:5]          
+                lon = 'lon:'+str(current_position[1])[:5]          
+                temp = str(imu.get_values()['temperature celsius'])[:5] 
+                spd = 'spd:    '+str(gps.getData()['speed'])[:3]            
+                course = 'NESW:'+str(gps.getData()['course'])
+                lcd.move_to(0,0)
+                lcd.putstr(spd)
+                lcd.move_to(len(spd)+2,0)
+                lcd.putstr(course)
+                lcd.move_to(0,1)
+                lcd.putstr(lat)
+                lcd.move_to(len(lat)+1,1)
+                lcd.putstr(lon)
+                lcd.move_to(0,2)
+                lcd.putstr(f"bat: {str(int(battery_percent))}%")
+                lcd.move_to(0,3)
+                lcd.putstr("Tem: "+temp)
+                lcd.move_to(len("Tem"+temp)+1,3)
+                lcd.putchar(chr(0))
             start_2 = ticks_ms()
             
     # Krav 3
