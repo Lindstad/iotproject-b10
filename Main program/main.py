@@ -61,7 +61,7 @@ interval_2 = 3000
 
 client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token = secrets.ACCESS_TOKEN)
 client.connect()
-print("Connected to ThingsBoard, starting to send and receive data")
+print("connected to thingsboard, starting to send and receive data")
 
 program_4 = gps_program(UART, GPS_SIMPLE)
 
@@ -129,6 +129,7 @@ interval_11 = 5000
 moving_11 = True
 distance = 0
 
+
 while True:
     try:
         if ticks_ms() - start_1 > interval_1:
@@ -143,7 +144,8 @@ while True:
             current_time = ticks_ms()
             current_position = program_4.get_lat_lon()
             if gc.mem_free() < 2000:          
-                gc.collect()                           
+                gc.collect()
+                print("Trash collected")
             print(f"Krav 4: Current position: {current_position}")
             if last_position:
                 lat_diff = abs(current_position[0] - last_position[0])
@@ -154,7 +156,7 @@ while True:
             if moving:
                 last_movement_time = current_time
                 if stillness_flag:
-                    telemetry = {'latitude': current_position[0], 'longitude': current_position[1]}
+                    telemetry_4 = {'latitude4': current_position[0], 'longitude4': current_position[1]}
                     client.send_telemetry(telemetry)
                     print("Movement detected, telemetry sent:", telemetry)
                     stillness_flag = False 
@@ -171,7 +173,7 @@ while True:
                 lat = 'lat:'+str(current_position[0])[:5]          
                 lon = 'lon:'+str(current_position[1])[:5]          
                 temp = str(imu.get_values()['temperature celsius'])[:5] 
-                spd = 'spd:    '+str(gps.getData()['speed'])[:3]            
+                spd = 'spd:  '+str(gps.getData()['speed'])[:3]            
                 course = 'NESW:'+str(gps.getData()['course'])
                 lcd.move_to(0,0)
                 lcd.putstr(spd)
@@ -187,12 +189,12 @@ while True:
                 lcd.putstr("Tem: "+temp)
                 lcd.move_to(len("Tem"+temp)+1,3)
                 lcd.putchar(chr(0))
-            telemetry_3 = {'latitude': gps.getData()['latitude'],
-                         'longitude': gps.getData()['longitude'],
-                         'temperature':temp,
-                         'batteryLevel':battery_percent,
-                         'course':gps.getData()['course']}
-            client.send_telemetry(telemetry_3)
+                telemetry_3 = {'latitude': gps.getData()['latitude'],
+                             'longitude': gps.getData()['longitude'],
+                             'temperature':temp,
+                             'batteryLevel':battery_percent,
+                             'course':gps.getData()['course']}
+                client.send_telemetry(telemetry_3)
             start_2 = ticks_ms()
             
         if ticks_ms() - start_6 > interval_6:
@@ -211,8 +213,12 @@ while True:
 
         if ticks_ms() - start_7 > interval_7:
             current = ina219.get_current()
+            remaning_current_time = ((battery_percent * 1800) / current) / 60
+            
             print("Krav 7:", str(current) + " mA")
-            telemetry_7 = {'stromforbrug': current}
+            print("Krav 7:", str(remaning_current_time) + " Timer tilbage")
+            telemetry_7 = {'stromforbrug': current,
+                           "restlevetid": remaning_current_time}
             client.send_telemetry(telemetry_7)
             start_7 = ticks_ms()
 
