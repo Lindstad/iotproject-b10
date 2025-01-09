@@ -61,7 +61,7 @@ interval_2 = 3000
 
 client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token = secrets.ACCESS_TOKEN)
 client.connect()
-print("connected to thingsboard, starting to send and receive data")
+print("Connected to ThingsBoard, starting to send and receive data")
 
 program_4 = gps_program(UART, GPS_SIMPLE)
 
@@ -190,7 +190,7 @@ while True:
             telemetry_3 = {'latitude': gps.getData()['latitude'],
                          'longitude': gps.getData()['longitude'],
                          'temperature':temp,
-                         'batteryLevel':battery_percent(),
+                         'batteryLevel':battery_percent,
                          'course':gps.getData()['course']}
             client.send_telemetry(telemetry_3)
             start_2 = ticks_ms()
@@ -236,8 +236,3 @@ while True:
             
     except Exception as e:
         print(e)
-
-
-
-
-
