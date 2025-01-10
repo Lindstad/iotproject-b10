@@ -9,7 +9,6 @@ import gc
 from time import ticks_diff
 import secrets
 from neo_ring import selfneopixel
-from time import sleep
 from mpu6050 import MPU6050
 from machine import I2C
 from ina219_lib import INA219
@@ -116,7 +115,6 @@ dht11 = DHT11(Pin(2))
 lmt87 = LMT87(35)
 mosfet_pin = Pin(4, Pin.OUT)
 
-
 lmt87_threshold = 30
 dht11_threshold = 30
 
@@ -128,7 +126,6 @@ start_11 = ticks_ms
 interval_11 = 5000
 moving_11 = True
 distance = 0
-
 
 while True:
     try:
