@@ -44,7 +44,7 @@ start_1 = ticks_ms()
 interval_1 = 1000
 
 gps = OwnGPS.OwnGPS(2)
-custom_chr = bytearray([0b00111,
+symbol_grader = bytearray([0b00111,
               0b00101,
               0b00111,
               0b00000,
@@ -52,7 +52,7 @@ custom_chr = bytearray([0b00111,
               0b00000,
               0b00000,
               0b00000])
-lcd.custom_char(0,custom_chr)
+lcd.custom_char(0,symbol_grader)
 
 start_2 = ticks_ms()
 interval_2 = 3000
