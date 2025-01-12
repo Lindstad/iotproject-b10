@@ -111,6 +111,7 @@ def handler(req_id, method, params):
         print(e)
 start_9 = ticks_ms()
 interval_9 = 1000
+
 dht11 = DHT11(Pin(2))
 lmt87 = LMT87(35)
 mosfet_pin = Pin(4, Pin.OUT)
@@ -118,7 +119,7 @@ mosfet_pin = Pin(4, Pin.OUT)
 lmt87_threshold = 30
 dht11_threshold = 30
 
-last_dht11_time = 0
+# last_dht11_time = 0    SLET evt da vi ikke bruger den
 start_10 = ticks_ms()
 interval_10 = 5000
 
