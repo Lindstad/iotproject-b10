@@ -18,12 +18,8 @@ class GroenOpladning:
 
         responsedata = response.json()
 
-        # En tommelfingerregel siger, at når der udledes under 50 gram CO2 pr. kwh strøm, er strømmen grøn.”
-        # 'records' for listen, [1] for DK2, 'CO2Emission' for værdien.
         return responsedata['records'][1]['CO2Emission']
     
-    # Denne funktion bruger vi til at styre om en pin skal tændes eller slukkes,
-    # altså til at styre ladekræsen
     def calc(self):
         if self.getEmissions() < 50:
             self.pin_Green.on()
