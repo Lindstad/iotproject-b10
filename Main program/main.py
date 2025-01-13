@@ -1,16 +1,14 @@
 import OwnGPS
-from machine import ADC, Pin
+from machine import ADC, Pin, I2C, UART
 from gpio_lcd import GpioLcd
 from uthingsboard.client import TBDeviceMqttClient
 from gps_klasse import client_program, gps_program
-from machine import UART
 from gps_simple import GPS_SIMPLE
 import gc
 from time import ticks_diff
 import secrets
 from neo_ring import selfneopixel
 from mpu6050 import MPU6050
-from machine import I2C
 from ina219_lib import INA219
 from dht import DHT11
 from lmt87 import LMT87
