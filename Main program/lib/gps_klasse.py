@@ -65,8 +65,6 @@ program.client_run()
 program2 = gps_program(UART, GPS_SIMPLE, gc, secrets, client_program,1000)
 
 
-while True:
-    program2.program()
                                             
 
 

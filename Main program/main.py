@@ -13,31 +13,29 @@ from ina219_lib import INA219
 from dht import DHT11
 from lmt87 import LMT87
 
+client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token = secrets.ACCESS_TOKEN)
+client.connect()
+print("connected to thingsboard, starting to send and receive data")
+
 lcd = GpioLcd(rs_pin=Pin(27), enable_pin=Pin(25),
               d4_pin=Pin(33), d5_pin=Pin(32), d6_pin=Pin(21), d7_pin=Pin(22),
               num_lines=4, num_columns=20)
-
 potmeter_adc = ADC(Pin(36))
 potmeter_adc.atten(ADC.ATTN_11DB)
-
 adc1 = 2591
 U1 = 6.0
 adc2 = 3629
 U2 = 8.4
-
 a = (U1-U2)/(adc1-adc2)
 b = U2 - a*adc2
-
 def batt_voltage(adc_v):
     u_batt = a*adc_v+b
     return u_batt
-
 def batt_percentage(u_batt):
     without_offset = (u_batt-6)
     normalized = without_offset / (8.4-6.0)
     percent = normalized * 100
     return percent
-
 start_1 = ticks_ms()
 interval_1 = 1000
 
@@ -51,44 +49,33 @@ symbol_grader = bytearray([0b00111,
               0b00000,
               0b00000])
 lcd.custom_char(0,symbol_grader)
-
 start_2 = ticks_ms()
 interval_2 = 3000
 
-
-client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token = secrets.ACCESS_TOKEN)
-client.connect()
-print("connected to thingsboard, starting to send and receive data")
-
 program_4 = gps_program(UART, GPS_SIMPLE)
-
-start_4 = ticks_ms()
-interval_4 = 1000
-
 STILLNESS_TIME = 3 * 60 * 1000  
 MOVEMENT_THRESHOLD = 0.0002
 last_position = None
 last_movement_time = ticks_ms()
 stillness_flag = False
-
 ring = selfneopixel(12,26)
 ring.set_color(0,0,0)
+start_4 = ticks_ms()
+interval_4 = 1000
 
-start_6 = ticks_ms()
-interval_6 = 200
 brake = False
 brake_start = ticks_ms()
 i2c = I2C(0)
 imu = MPU6050(i2c)
 test = 0
+start_6 = ticks_ms()
+interval_6 = 200
 
 i2c_port = 0
 ina219_i2c_addr = 0x40
-
 i2c = I2C(i2c_port)
 ina219 = INA219(i2c, ina219_i2c_addr)
 print("\nINA219 Current Measurement Program\n")
-
 ina219.set_calibration_16V_400mA()
 start_7 = ticks_ms()
 interval_7 = 1000
@@ -113,18 +100,10 @@ interval_9 = 1000
 dht11 = DHT11(Pin(2))
 lmt87 = LMT87(35)
 mosfet_pin = Pin(4, Pin.OUT)
-
 lmt87_threshold = 30
 dht11_threshold = 30
-
-# last_dht11_time = 0    SLET evt da vi ikke bruger den
 start_10 = ticks_ms()
 interval_10 = 5000
-
-start_11 = ticks_ms
-interval_11 = 5000
-moving_11 = True
-distance = 0
 
 while True:
     try:
